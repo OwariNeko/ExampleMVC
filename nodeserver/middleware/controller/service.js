@@ -20,7 +20,7 @@ class service
     getRandomNumber()
     {
         return new Promise( (resolve, reject) => {
-            resolve ({  message : `Number : ${Math.random()}`
+            resolve ({  message : `Number : ${Math.floor(Math.random()*101)}`
             })
         })
     }

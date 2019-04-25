@@ -33,7 +33,7 @@ router.get('/Number/GetRandomNumber',(req,res,next)=>{
       appendHeader(res)
       console.log(result.message)
 
-      res.json(result);
+      res.json(result.message);
     })
       .catch((error) => {
         res.status(error.status);
