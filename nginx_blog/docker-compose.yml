@@ -1,28 +1,65 @@
 version: '2'
+networks:
+  default:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.33.0.0/16
 services:
 
-  site_c:
+  site_a:
     image: nginx:1.13.0-alpine
-    container_name: site_c
+    container_name: site_a
     ports:
-      - "8082:80"
+      - "8080:80"
     volumes:
-      - ./test-app/dist/test-app/:/var/www/html/website
+      - ./site_a/:/var/www/html/website
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/whitelist.conf:/etc/nginx/whitelist.conf
+    networks:
+      default:
+        ipv4_address: 172.33.1.1
+  
+  site_b:
+    image: nginx:1.13.0-alpine
+    container_name: site_b
+    ports:
+      - "8081:80"
+    volumes:
+      - ./site_b/:/var/www/html/website
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/whitelist.conf:/etc/nginx/whitelist.conf
+    networks:
+      default:
+        ipv4_address: 172.33.1.2
+  
+  # site_c:
+  #   image: nginx:1.13.0-alpine
+  #   container_name: site_c
+  #   ports:
+  #     - "8082:80"
+  #   volumes:
+  #     - ./test-app/dist/test-app/:/var/www/html/website
+  #     - ./nginx/nginx.conf:/etc/nginx/nginx.conf
 
-  site_d:
-    image: nginx:1.13.0-alpine
-    container_name: site_d
-    ports:
-      - "8083:80"
-    volumes:
-      - ./test-app/dist/test-app/:/var/www/html/website
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+  # site_d:
+  #   image: nginx:1.13.0-alpine
+  #   container_name: site_d
+  #   ports:
+  #     - "8083:80"
+  #   volumes:
+  #     - ./test-app/dist/test-app/:/var/www/html/website
+  #     - ./nginx/nginx.conf:/etc/nginx/nginx.conf
 
   docker_proxy:
     image: nginx
     container_name: docker_proxy
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/whitelist.conf:/etc/nginx/whitelist.conf
+
     ports:
       - "80:80"
+    networks:
+      default:
+        ipv4_address: 172.33.2.1
